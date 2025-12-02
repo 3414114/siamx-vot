@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug eval_360VOT",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/eval_360VOT.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "-f", "../benchmark/360VOT-bfov-results",
+                "-d", "../dataset"
+            ],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        }
+    ]
+}

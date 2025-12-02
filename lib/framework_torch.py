@@ -4,7 +4,7 @@ from torchvision.ops import masks_to_boxes
 from torchvision.transforms.functional import rgb_to_grayscale
 import numpy as np
 
-from cc_torch import connected_components_labeling
+#from cc_torch import connected_components_labeling
 
 from utils import *
 
@@ -546,6 +546,17 @@ class OmniImageTorch():
         rotation = torch.deg2rad(rotation) if isinstance(rotation, torch.Tensor) else ang2rad(rotation)
         return self.align_center_by_lonlat(img, lon, lat, rotation)
     
+    def get_labeled_mask_cv2(self, mask):
+        # 1. OpenCV 需要 uint8 类型的 numpy 数组
+        mask_np = mask.detach().cpu().numpy().astype(np.uint8)
+        
+        # 2. 连通域标记 (connectivity=8 表示 8连通，4 表示 4连通)
+        num_labels, labels = cv2.connectedComponents(mask_np, connectivity=8)
+        
+        # 3. 转回 PyTorch
+        labeled_mask = torch.from_numpy(labels).to(mask.device)
+        
+        return labeled_mask
     def compute_bbox_from_mask(self, mask, max_only = False):
         """
         Compute bounding boxes from a binary mask.
@@ -570,7 +581,10 @@ class OmniImageTorch():
                     mode='nearest'
                 ).squeeze(0).squeeze(0)
 
-            labeled_mask = connected_components_labeling(mask.to(dtype=torch.uint8))
+            
+
+            #labeled_mask = connected_components_labeling(mask.to(dtype=torch.uint8))
+            labeled_mask = self.get_labeled_mask_cv2(mask)
             
             unique_labels, counts = torch.unique(labeled_mask, return_counts=True)
 

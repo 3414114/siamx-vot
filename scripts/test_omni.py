@@ -544,30 +544,47 @@ def visualizeMask2AnnoProcess(img, img_mask, omni=None):
 
 
 if __name__ == "__main__":
-    img = cv2.imread(os.path.join(this_dir, "..", "asset", "0030_000064.jpg"))
-    omni = OmniImage(img_h=img.shape[0], img_w=img.shape[1])
+    #img = cv2.imread(os.path.join(this_dir, "..", "asset", "0030_000064.jpg"))
+    #omni = OmniImage(img_h=img.shape[0], img_w=img.shape[1])
     # Figure 3
-    compare_bfov(img, omni)
+    #compare_bfov(img, omni)
     
     # test image rotation
     #t0 = time.time()
-    rotate_img(img, omni)
+    #rotate_img(img, omni)
     #print("rotate_img takes {}".format(time.time()-t0))
     #t0 = time.time()
     #rotate_img_equilib(img)
     #print("rotate_img_equilib takes {}".format(time.time()-t0))
 
     # Figure 2
-    img_path = os.path.join(this_dir, "..", "asset", "0115_000216.jpg")
-    anno_file = os.path.join(this_dir, "..", "asset", "0115_label.json")
-    compare_anno(img_path, anno_file, omni)
+    #img_path = os.path.join(this_dir, "..", "asset", "0115_000216.jpg")
+    #anno_file = os.path.join(this_dir, "..", "asset", "0115_label.json")
+    #compare_anno(img_path, anno_file, omni)
 
     # Figure 4
-    img_path = os.path.join(this_dir, "..", "asset", "0098_000193.jpg")
-    anno_file = os.path.join(this_dir, "..", "asset", "0098_label.json")
-    localAnno2GlobalAnno(img_path, anno_file, omni)
+    #img_path = os.path.join(this_dir, "..", "asset", "0098_000193.jpg")
+    #anno_file = os.path.join(this_dir, "..", "asset", "0098_label.json")
+    #localAnno2GlobalAnno(img_path, anno_file, omni)
 
     # Figure 3 in supp
-    img = cv2.imread(os.path.join(this_dir, "..", "asset", "0117_000211.jpg"))
-    img_mask = cv2.imread(os.path.join(this_dir, "..", "asset", "0117_000211_0.png"))
-    visualizeMask2AnnoProcess(img, img_mask, omni)
+    img_path = os.path.join(this_dir, "..","..", "testForAll","image", "000000.jpg")
+    mask_path = os.path.join(this_dir, "..","..", "testForAll","mask", "000000.png")
+    #img_path = os.path.join(this_dir, "..", "asset", "0117_000211.jpg")
+    #mask_path = os.path.join(this_dir, "..", "asset", "0117_000211_0.png")
+    img = cv2.imread(img_path)
+    img_mask = cv2.imread(mask_path)
+    
+    if img is None:
+        raise FileNotFoundError(f"Image not found: {img_path}")
+    if img_mask is None:
+        raise FileNotFoundError(f"Mask not found: {mask_path}")
+        # 创建一个全黑三通道 mask
+    white_mask = np.zeros_like(img_mask, dtype=np.uint8)
+
+    # 将红色通道大于阈值的地方变成白色
+    threshold = 127
+    red_region = img_mask[:, :, 2] > threshold  # 红色通道 > 阈值
+    white_mask[red_region] = [255, 255, 255]   # 置为白色
+
+    visualizeMask2AnnoProcess(img, white_mask)
