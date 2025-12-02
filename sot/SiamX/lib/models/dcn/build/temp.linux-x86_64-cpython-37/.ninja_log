@@ -1,0 +1,8 @@
+# ninja log v7
+1	14964	1764581732069809542	/media/magus/8b3b6711-f71d-46b3-8ada-91664ea67e85/zhangkang_workspace/360Tracking/SiamX/lib/models/dcn/build/temp.linux-x86_64-cpython-37/src/deform_conv_cuda_kernel.o	18ea21bb9dce441a
+0	14824	1764582100734588420	/media/magus/8b3b6711-f71d-46b3-8ada-91664ea67e85/zhangkang_workspace/360Tracking/SiamX/lib/models/dcn/build/temp.linux-x86_64-cpython-37/src/deform_conv_cuda_kernel.o	915f406ffe173ab5
+1	14337	1764582342301325391	/media/magus/8b3b6711-f71d-46b3-8ada-91664ea67e85/zhangkang_workspace/360Tracking/SiamX/lib/models/dcn/build/temp.linux-x86_64-cpython-37/src/deform_conv_cuda_kernel.o	c79380f1f08de829
+0	19410	1764582637471470126	/media/magus/8b3b6711-f71d-46b3-8ada-91664ea67e85/zhangkang_workspace/360Tracking/SiamX/lib/models/dcn/build/temp.linux-x86_64-cpython-37/src/deform_conv_cuda.o	133f7cbe865fbc9d
+2	13833	1764582657338275501	/media/magus/8b3b6711-f71d-46b3-8ada-91664ea67e85/zhangkang_workspace/360Tracking/SiamX/lib/models/dcn/build/temp.linux-x86_64-cpython-37/src/deform_pool_cuda_kernel.o	d4884f21fb15b9f5
+10	19365	1764582763196234544	/media/magus/8b3b6711-f71d-46b3-8ada-91664ea67e85/zhangkang_workspace/360Tracking/SiamX/lib/models/dcn/build/temp.linux-x86_64-cpython-37/src/deform_conv_cuda.o	133f7cbe865fbc9d
+2	17183	1764582782994039194	/media/magus/8b3b6711-f71d-46b3-8ada-91664ea67e85/zhangkang_workspace/360Tracking/SiamX/lib/models/dcn/build/temp.linux-x86_64-cpython-37/src/deform_pool_cuda.o	f6b0df3da95016e0
