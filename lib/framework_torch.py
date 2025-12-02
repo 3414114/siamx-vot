@@ -1166,6 +1166,76 @@ class OmniFrameworkTorch(OmniImageTorch):
         torch.cuda.empty_cache()
         return rgb_sr, msk_sr
 
+    def obtain_search_region_from_bfov(self, raw_rgb, clon, clat, fov_h, fov_v, rotation=0):
+        """Create a search region directly from a BFoV description.
+
+        This is used for the first frame where only the BFoV annotation is
+        available instead of a mask. It mirrors :func:`obtain_search_region`
+        but seeds the search region with the provided BFoV.
+        """
+
+        rgb = self._format_framework_rgb(raw_rgb)  # (H, W, 3)
+
+        init_bfov = Bfov(clon, clat, fov_h, fov_v, rotation)
+        self.valid_sr = True
+        self.cur_bfov_sr = self.search_region_bfov(init_bfov)
+
+        rgb_sr = self.crop_bfov(
+            rgb,
+            self.cur_bfov_sr,
+            num_sample_h=self.out_width,
+            num_sample_v=self.out_height,
+            return_uv=False,
+        )
+
+        # Build a binary mask representing the BFoV in the panorama, then
+        # crop it with the search-region BFoV to align with the rgb_sr.
+        unit_sr = torch.ones((self.out_height, self.out_width), device=self.device)
+        msk_full = self.uncrop_bfov(
+            unit_sr,
+            init_bfov,
+            out_width=self.ori_width,
+            out_height=self.ori_height,
+            ker_size=self.dense_kernel,
+            iter=self.dense_iter,
+            return_uv=False,
+        )
+        msk_sr = self.crop_bfov(
+            msk_full,
+            self.cur_bfov_sr,
+            num_sample_h=self.out_width,
+            num_sample_v=self.out_height,
+            return_uv=False,
+        )
+
+        rgb_sr = self._format_framework_rgb(rgb_sr, raw_rgb)
+        rgb_sr = rgb_sr / self.const_255
+        msk_sr = self._format_framework_msk(msk_sr, msk_full)
+
+        if self.save_inter:
+            self.cur_rgb_sr = rgb_sr.cpu().int().numpy()
+            self.cur_msk_sr = msk_sr.cpu().int().numpy()
+            self.cur_bfov = init_bfov
+
+        torch.cuda.empty_cache()
+        return rgb_sr, msk_sr
+
+    def bfov_to_mask(self, clon, clat, fov_h, fov_v, rotation=0):
+        """Generate a binary mask in the panorama from a BFoV description."""
+
+        bfov = Bfov(clon, clat, fov_h, fov_v, rotation)
+        unit_sr = torch.ones((self.out_height, self.out_width), device=self.device)
+        msk = self.uncrop_bfov(
+            unit_sr,
+            bfov,
+            out_width=self.ori_width,
+            out_height=self.ori_height,
+            ker_size=self.dense_kernel,
+            iter=self.dense_iter,
+            return_uv=False,
+        )
+        return self._format_framework_msk(msk)
+
     def reproject_search_region(self, raw_prd):
         """
         Reproject the predicted mask from search region back to the original frame.
